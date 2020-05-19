@@ -1,5 +1,5 @@
 # uefiExp
 My experiments with UEFI (truthfully).
 
-#Makefile
+# Makefile
 The config. works well on my system, may require altering.
