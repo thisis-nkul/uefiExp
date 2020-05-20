@@ -4,7 +4,7 @@ OBJS            = main.o
 TARGET          = hello.efi
 
 EFIINC          = /usr/include/efi
-EFIINCS         = -I$(EFIINC) -I$(EFIINC)/$(ARCH) -I$(EFIINC)/protocol
+EFIINCS         = -I $(EFIINC) -I $(EFIINC)/$(ARCH) -I $(EFIINC)/protocol
 LIB             = /usr/lib
 EFILIB          = /usr/lib
 EFI_CRT_OBJS    = $(EFILIB)/crt0-efi-$(ARCH).o
@@ -22,9 +22,13 @@ LDFLAGS         = -nostdlib -znocombreloc -T $(EFI_LDS) -shared \
 all: $(TARGET)
 
 hello.so: $(OBJS)
-	ld $(LDFLAGS) $(OBJS) -o $@ -lefi -lgnuefi
+	ld $(LDFLAGS) $(OBJS) -o ../build/hello/$@ -lefi -lgnuefi
 
 %.efi: %.so
 	objcopy -j .text -j .sdata -j .data -j .dynamic \
 		-j .dynsym  -j .rel -j .rela -j .reloc \
-		--target=efi-app-$(ARCH) $^ $@
+		--target=efi-app-$(ARCH) ../build/hello/$^ ../build/hello/$@
+
+run: hello.efi
+	qemu-system-x86_64 --bios ../build/bios.bin -hda fat:rw:../build/hello/
+
